@@ -4,7 +4,8 @@ import os,re,time
 from selenium import webdriver
 from bs4 import BeautifulSoup
 
-con = pymysql.connect(host = '127.0.0.1',port = 3307 , user = "root" , passwd = "", charser = "utf8")
+con = pymysql.connect(host = '127.0.0.1',port = 3307 , user = "root" ,passwd = "",db = "horoscopes")
+cur = con.cursor()
 
 url = "https://www.dcard.tw/f/horoscopes?latest=true"
 #res = requests.get(url)
@@ -23,7 +24,7 @@ driver.get(url)
 Height = driver.execute_script('return document.body.scrollHeight')
 
 
-for i in range (1,10):
+for i in range (1,3):
     okay = 0
     page+=1
     #javascript指令，使網頁下拉至最底層
@@ -38,9 +39,10 @@ for i in range (1,10):
 
     for h in range(len(DateTime)):
         print("第" ,h, "筆 :" , DateTime[h].text)
-        if DateTime[h].text[:5] == "7月20日":
+        if DateTime[h].text[:5] == "7月21日":
             okay = 1
             print("已抓完今日到20日的所有文章")
+            break
     if okay == 1:
         break
 
@@ -65,10 +67,18 @@ for i in range(len(gender)):
 
 try:
     for count in range (0,999):
-        print("第" + str(number) + "筆 : ","\n學校 : " +str(school[count].text), "\n標題 : " + str(title[count].text ), "\n性別 : " + str(newgender[count]))
-        #print("第 "+number+"筆 \n" ,"學校 : " + school[count] , "標題 : " + title[count] , "性別 : " + gender[count] )
+        print("第" + str(number) + "筆 : ","\n學校 : " +str(school[count].text), "\n標題 : " + str(title[count].text ), "\n性別 : " + str(newgender[count]),"\n時間 : " + str(DateTime[count].text))
+        #sql = "INSERT INTO dcard(school,title,gender,DateTime)VALUES ('%s','%s','%s','%s',)" % (str(school[coumt].text),str(title[count].text),str(newgender[count]),str(DateTime[coumt].text))
+        #cur.execute(sql)
+        # Commit your changes in the database
+        #con.commit()
         number+=1
 except:
     print("\n抓取完成")
-    
+    sql = "INSERT INTO dcard(school,title,gender,DateTime)VALUES ('%s','%s','%s','%s',)" % (str(school[1].text), str(title[1].text), str(newgender[1]), str(DateTime[1].text))
+    cur.execute(sql)
+    # Commit your changes in the database
+    con.commit()
+    con.close()
+
 

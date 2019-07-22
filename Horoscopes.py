@@ -1,7 +1,10 @@
 import requests
+import pymysql
 import os,re,time
 from selenium import webdriver
 from bs4 import BeautifulSoup
+
+con = pymysql.connect(host = '127.0.0.1',port = 3307 , user = "root" , passwd = "", charser = "utf8")
 
 url = "https://www.dcard.tw/f/horoscopes?latest=true"
 #res = requests.get(url)

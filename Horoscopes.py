@@ -21,6 +21,7 @@ Height = driver.execute_script('return document.body.scrollHeight')
 
 
 for i in range (1,10):
+    okay = 0
     page+=1
     #javascript指令，使網頁下拉至最底層
     driver.execute_script("window.scrollTo(0,"+str(Height)+(');')) # 使頁面下拉至底部
@@ -35,8 +36,10 @@ for i in range (1,10):
     for h in range(len(DateTime)):
         print("第" ,h, "筆 :" , DateTime[h].text)
         if DateTime[h].text[:5] == "7月20日":
+            okay = 1
             print("已抓完今日到20日的所有文章")
-            break
+    if okay == 1:
+        break
 
 soup = BeautifulSoup(driver.page_source, 'html.parser')
 #學校、標題、性別
@@ -48,7 +51,7 @@ gender = soup.find_all('div',re.compile('AnonymousAvatar'))
 #print(gender)
 
 for i in range(len(gender)):
-    print("gender : " , gender[i])
+    #print("gender : " , gender[i])
     c = gender[i]["class"]
     if c[0]== "AnonymousAvatar_male_3mpl_6":
         newgender.append("男性")
